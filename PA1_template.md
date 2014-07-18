@@ -19,7 +19,8 @@ The assignment is divided into several sections and each section answers a certa
 
 - Loading the data and processing it : 
 
-```{r}
+
+```r
 unzip(zipfile = "activity.zip")
 data1<-read.csv("activity.csv")
 ```
@@ -31,7 +32,8 @@ For this part of the assignment, you can ignore the missing values in the datase
 2. Calculate and report the mean and median total number of steps taken
 per day
 
-```{r}
+
+```r
 activity_naomit<-na.omit(data1)
 
 ##Determine the total sum of total number of steps each day and make a plot
@@ -42,16 +44,37 @@ activitysum$Group.1<-as.Date(activitysum$Group.1)
 activitysum$x<-as.numeric(activitysum$x)
 
 hist(activitysum$x,xlab = "Steps per day",main = "Sum of Steps per day")
+```
 
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2.png) 
 
+```r
 ##Calculate the mean and median of number of steps taken per day
 
 stepsmean<-mean(activitysum$x)
 stepsmedian<-median(activitysum$x)
 
 "The mean and median of number of steps taken per day are"
+```
+
+```
+## [1] "The mean and median of number of steps taken per day are"
+```
+
+```r
 stepsmean
+```
+
+```
+## [1] 10766
+```
+
+```r
 stepsmedian
+```
+
+```
+## [1] 10765
 ```
 
 - What is the average daily activity pattern?
@@ -60,7 +83,8 @@ stepsmedian
 2. Which 5-minute interval, on average across all the days in the dataset,
 contains the maximum number of steps?
 
-```{r}
+
+```r
 ##Make a time series plot of the 5 minute interval and the average number of steps taken, averaged across all days
 
 activityintervalmean<-aggregate.data.frame(x = activity_naomit$steps, by = list(activity_naomit$interval),FUN = mean)
@@ -69,14 +93,27 @@ activityintervalmean<-aggregate.data.frame(x = activity_naomit$steps, by = list(
 
 
 plot(x = activityintervalmean$Group.1,y = activityintervalmean$x, type = 'l', xlab = "Interval", ylab= "Average number of steps", main = "Time series plot of Steps vs Interval")
+```
 
+![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3.png) 
 
+```r
 "Time interval with maximum average number of mean steps"
+```
+
+```
+## [1] "Time interval with maximum average number of mean steps"
+```
+
+```r
 maxmeansteps <- max(activityintervalmean$x)
 int_max <- activityintervalmean$Group.1[match(maxmeansteps,activityintervalmean$x)]
 
 int_max
+```
 
+```
+## [1] 835
 ```
 
 - Imputing missing values
@@ -100,16 +137,28 @@ What is the impact of imputing missing data on the estimates of the total daily 
 Answer :
 We can see a minor impact in the histogram. The impact greatly affects in region between 10000 to 15000 steps. 
 
-```{r}
 
+```r
 ##Total number of missing values
 
 missingvalues<-sum(is.na(data1))
 "Total number of missing values"
+```
+
+```
+## [1] "Total number of missing values"
+```
+
+```r
 missingvalues
 ```
 
-```{r results = "hide"}
+```
+## [1] 2304
+```
+
+
+```r
 ##Impute the missing values with the average of the time interval value obtained previously
 library(Hmisc)
 data2<-data1
@@ -119,21 +168,44 @@ subset$steps <- impute(subset$steps,subset$nanewval)
 data2$steps <- impute(data2$steps, subset$steps)
 ```
 
-```{r}
+
+```r
 ##Draw a histogram of number of steps taken during each day
 factivitysum<-aggregate.data.frame(x = data2$steps, by = list(data2$date),FUN = sum)
 factivitysum$Group.1<-as.Date(factivitysum$Group.1)
 factivitysum$x<-as.numeric(factivitysum$x)
 
 hist(factivitysum$x,xlab = "Steps per day",main = "Sum of Steps per day")
+```
 
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6.png) 
+
+```r
 ##Calculate the mean and median of total number of steps taken per day
 fstepsmean<-mean(factivitysum$x)
 fstepsmedian<-median(factivitysum$x)
 
 "the mean and median of total number of steps taken per day"
+```
+
+```
+## [1] "the mean and median of total number of steps taken per day"
+```
+
+```r
 fstepsmean
+```
+
+```
+## [1] 10766
+```
+
+```r
 fstepsmedian
+```
+
+```
+## [1] 10766
 ```
 
 - Are there differences in activity patterns between weekdays and weekends?
@@ -145,7 +217,8 @@ day.
 5-minute interval (x-axis) and the average number of steps taken, averaged
 across all weekday days or weekend days (y-axis).
 
-```{r}
+
+```r
 ##Seperate the data into weekdays and weekends by forming a new vector called "daylevel"
 data2$date<-as.Date(data2$date)
 data2$steps<-as.numeric(data2$steps)
@@ -166,12 +239,13 @@ weekday<-subset(data2,data2$daylevel=="weekday")
 weekendmean<-aggregate.data.frame(x = weekend$steps, by = list(weekend$interval),FUN = mean)
 weekdaymean<-aggregate.data.frame(x = weekday$steps, by = list(weekday$interval),FUN = mean)
 ```
-```{r}
 
+```r
 par(mfrow=c(3,1)) 
 plot(x = weekdaymean$Group.1, y = weekdaymean$x, type = 'l', xlab = "Interval", ylab= "Average number of steps", main = "Steps vs Interval for weekdays")
 plot(x = weekendmean$Group.1, y = weekendmean$x, type = 'l', xlab = "Interval", ylab= "Average number of steps", main = "Steps vs Interval for weekends")
-
 ```
+
+![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8.png) 
 
 Answer: The plot shows that there are more number of steps taken in the weekend. 
